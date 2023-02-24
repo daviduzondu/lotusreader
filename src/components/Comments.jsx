@@ -75,22 +75,25 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
                                 onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}</div>
                     </div>
                     <CommentText>{node.text}</CommentText>
-                    <div className='items-center justify-center flex w-fit m-auto md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
-                        {
-                            //Checks to see if hiddenRepliesCount(int) is truthy
-                            (hiddenRepliesCount) ?
-                                //Show the "Show [hiddenRepliesCount]" button
-                                (<div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 ' >
-                                    <FiMaximize2 className='text-xl mr-2 ' />
-                                    expand thread [{hiddenRepliesCount} more]</div>
-                                )
-                                :
-                                // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
-                                ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 '>
-                                    <FiMinimize2 className='text-xl mr-2' />
-                                    collapse thread</div>
-                        }
+                    <div className='flex w-full justify-end'>
+                        <div className='items-center flex w-fit mr-3 md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
+                            {
+                                //Checks to see if hiddenRepliesCount(int) is truthy
+                                (hiddenRepliesCount) ?
+                                    //Show the "Show [hiddenRepliesCount]" button
+                                    (<div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 ' >
+                                        <FiMaximize2 className='text-xl mr-2 ' />
+                                        expand thread [{hiddenRepliesCount} more]</div>
+                                    )
+                                    :
+                                    // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
+                                    ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 '>
+                                        <FiMinimize2 className='text-xl mr-2' />
+                                        collapse thread</div>
+                            }
+                        </div>
                     </div>
+
                 </div>
             }
             {/* Recursively show the comments in a tree format. */}
@@ -107,10 +110,22 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 // }
 
 function CommentText({ children }) {
-
+    let regex=/<a\s+(?:[^>]*?\s+)?href="https:\/\/news\.ycombinator\.com\/item\?id=([\d]+)"(?:\s+[^>]*)?>/gi;
     return (
         <div className='content md:text-sm cursor-pointer break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
-        >{parse(children)}
+        >{parse(children, {
+            replace: domNode=>{
+                if(domNode.attribs){
+                    if(domNode.attribs.href){
+                        if(domNode.attribs.href.includes("item")){
+                            return <a href={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`}>
+                                {`${domNode.attribs.href}}`}
+                            </a>
+                        }
+                    }
+                }
+            }
+        })}
         </div>
     )
 }
