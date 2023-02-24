@@ -6,7 +6,7 @@ function PostCard({ item }) {
 
 
     return (
-        <Link to={`/item/${item.id}`}>
+        <Link to={`/item/${item.id}`} target="_blank">
             <div className='flex hover:cursor-pointer hover:bg-blue-50 border border-t-0 border-b-1 border-r-1 border-gray-700 px-3'>
                 <div key={item.id} className='w-full my-2 '>
                     <div className='post-info flex w-full items-center'>
