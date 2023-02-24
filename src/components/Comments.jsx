@@ -68,14 +68,14 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
             {/* Render the comment's headers and text */}
             {(node.author && node.text) &&
                 <div className='content py-3 ' /**onClick={() => showHideChildren(id)}**/>
-                    <div className='headers text-blue-900 font-bold w-full px-3 py-1 flex items-center '>
+                    <div className='headers text-blue-900 md:text-xs font-bold w-full px-3 py-1 flex items-center '>
                         <div className='flex flex-1 items-center'>
                             {console.log(node.author === postAuthor)}
                             {(node.author === postAuthor) ? <><HiUser className='mr-1' /> {node.author}</> : node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className={`hover:cursor-pointer hover:underline`}
                                 onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}</div>
                     </div>
                     <CommentText>{node.text}</CommentText>
-                    <div className='items-center justify-center flex w-fit m-auto text-gray-700' onClick={() => showHideChildren(id)}>
+                    <div className='items-center justify-center flex w-fit m-auto md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
                         {
                             //Checks to see if hiddenRepliesCount(int) is truthy
                             (hiddenRepliesCount) ?
@@ -109,7 +109,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 function CommentText({ children }) {
 
     return (
-        <div className='content cursor-pointer break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
+        <div className='content md:text-sm cursor-pointer break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
         >{parse(children)}
         </div>
     )
