@@ -4,9 +4,13 @@ import { useState, useEffect } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { BsReplyFill } from "react-icons/bs";
 import { HiUser } from "react-icons/hi"
+import { Link } from 'react-router-dom';
 import { FiMinimize2, FiMaximize2, FiEye } from 'react-icons/fi'
+import { RxDotFilled } from 'react-icons/rx'
 import parse from 'html-react-parser';
-import Tippy from '@tippyjs/react';
+import moment from 'moment/moment';
+import { Tooltip } from 'react-tooltip'
+
 
 function Comments({ comments, postAuthor }) {
     return (<Tree data={comments} postAuthor={postAuthor} />)
@@ -57,7 +61,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
         );
         document.querySelector(`[data-parent-id='parent-${parent_id}']`).children[0].children[1].classList.add("animate-pulse-once");
     }
-    { console.log(postAuthor) }
+
     return (
         <div className={
             // Render the comments container
@@ -68,11 +72,14 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
             {/* Render the comment's headers and text */}
             {(node.author && node.text) &&
                 <div className='content py-3 ' /**onClick={() => showHideChildren(id)}**/>
-                    <div className='headers text-blue-900 md:text-xs font-bold w-full px-3 py-1 flex items-center '>
+                    <div className='headers text-blue-900 md:text-xs text-sm font-bold w-full px-3 py-1 flex items-center '>
                         <div className='flex flex-1 items-center'>
-                            {console.log(node.author === postAuthor)}
                             {(node.author === postAuthor) ? <><HiUser className='mr-1' /> {node.author}</> : node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className={`hover:cursor-pointer hover:underline`}
-                                onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}</div>
+                                onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}
+                                <RxDotFilled className='mx-1' />
+                                <span>{moment(node.created_at).fromNow()}</span>
+                                
+                                </div>
                     </div>
                     <CommentText>{node.text}</CommentText>
                     <div className='flex w-full justify-end'>
@@ -110,18 +117,20 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 // }
 
 function CommentText({ children }) {
-    let regex=/<a\s+(?:[^>]*?\s+)?href="https:\/\/news\.ycombinator\.com\/item\?id=([\d]+)"(?:\s+[^>]*)?>/gi;
     return (
         <div className='content md:text-sm cursor-pointer break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
         >{parse(children, {
-            replace: domNode=>{
-                if(domNode.attribs){
-                    if(domNode.attribs.href){
-                        if(domNode.attribs.href.includes("item")){
-                            return <a href={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`}>
-                                {`${domNode.attribs.href}}`}
-                            </a>
+            replace: domNode => {
+                if (domNode.attribs) {
+                    if (domNode.attribs.href) {
+                        if (domNode.attribs.href.includes("item")) {
+                            return <Link to={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`}>
+                                {`${domNode.attribs.href}`}
+                            </Link>
                         }
+                        return <Link to={`${domNode.attribs.href}`} target="_blank">
+                            {`${domNode.attribs.href}}`}
+                        </Link>
                     }
                 }
             }
