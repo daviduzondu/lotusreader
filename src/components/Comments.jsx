@@ -32,10 +32,12 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
         if (replies.classList.contains("hidden")) {
             // Remove the hidden class
             replies.classList.remove("hidden");
+            document.querySelector(`.comment-${replies_id}`).classList.remove("bg-blue-200")
             // Set the hidden replies to null
             sethiddenRepliesCount();
         }
         else if (replies.childElementCount > 0) {
+            document.querySelector(`.comment-${replies_id}`).classList.add("bg-blue-200")
             // Add the "hidden" class
             replies.classList.add("hidden");
             // Set the hidden replies to the number of replies
@@ -59,13 +61,13 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
     return (
         <div className={
             // Render the comments container
-            (!isRoot) ? `comment-container inner-comment-shadow  ml-3 border border-b-0 border-r-0 border-black hover:cursor-default`
-                : `comment-container root-shadow
+            (!isRoot) ? `comment-container comment-${id} inner-comment-shadow ml-3 border border-b-0 border-r-0 border-black hover:cursor-default`
+                : `comment-container root-shadow comment-${id}
             border border-black mt-3  hover:cursor-default`} data-parent-id={`parent-${id}`} ref={parentEl}>
 
             {/* Render the comment's headers and text */}
             {(node.author && node.text) &&
-                <div className='content py-3 ' onClick={() => showHideChildren(id)}>
+                <div className='content py-3 ' /**onClick={() => showHideChildren(id)}**/>
                     <div className='headers text-blue-900 font-bold w-full px-3 py-1 flex items-center '>
                         <div className='flex flex-1 items-center'>
                             {console.log(node.author === postAuthor)}
@@ -73,18 +75,18 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
                                 onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}</div>
                     </div>
                     <CommentText>{node.text}</CommentText>
-                    <div className='items-center justify-center flex w-fit m-auto text-white'>
+                    <div className='items-center justify-center flex w-fit m-auto text-gray-700' onClick={() => showHideChildren(id)}>
                         {
                             //Checks to see if hiddenRepliesCount(int) is truthy
                             (hiddenRepliesCount) ?
                                 //Show the "Show [hiddenRepliesCount]" button
-                                (<div className='flex font-normal hover:cursor-pointer items-center bg-gray-400 py-1 px-5 rounded-full my-3 ' >
+                                (<div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 ' >
                                     <FiMaximize2 className='text-xl mr-2 ' />
-                                    expand thread</div>
+                                    expand thread [{hiddenRepliesCount} more]</div>
                                 )
                                 :
                                 // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
-                                ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center bg-gray-400 py-1 px-5 rounded-full my-3 '>
+                                ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 '>
                                     <FiMinimize2 className='text-xl mr-2' />
                                     collapse thread</div>
                         }
