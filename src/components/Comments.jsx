@@ -3,25 +3,26 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { BsReplyFill } from "react-icons/bs";
+import { HiUser } from "react-icons/hi"
 import { FiMinimize2, FiMaximize2, FiEye } from 'react-icons/fi'
 import parse from 'html-react-parser';
 import Tippy from '@tippyjs/react';
 
-function Comments({ comments }) {
-    return (<Tree data={comments} />)
+function Comments({ comments, postAuthor }) {
+    return (<Tree data={comments} postAuthor={postAuthor} />)
 }
-function Tree({ data }) {
+function Tree({ data, postAuthor }) {
     return (
         <div className='md:mb-3 mx-3'>
             {data.map(rootNode => (
                 // console.log(rootNode)
-                (rootNode.author) && <TreeNode key={rootNode.id} id={rootNode.id} node={rootNode} indent={0} isRoot={true} parent={null} parentName={null} />
+                (rootNode.author) && <TreeNode key={rootNode.id} id={rootNode.id} node={rootNode} indent={0} isRoot={true} parent={null} parentName={null} postAuthor={postAuthor} />
             ))}
         </div>
     );
 }
 
-function TreeNode({ id, node, indent, isRoot, parent, parentName }) {
+function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) {
     const [showChildren, setShowChildren] = useState(true);
     const [parentEl, enableAnimations] = useAutoAnimate();
     const [hiddenRepliesCount, sethiddenRepliesCount] = useState();
@@ -54,6 +55,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName }) {
         );
         document.querySelector(`[data-parent-id='parent-${parent_id}']`).children[0].children[1].classList.add("animate-pulse-once");
     }
+    { console.log(postAuthor) }
     return (
         <div className={
             // Render the comments container
@@ -66,30 +68,33 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName }) {
                 <div className='content py-3 ' onClick={() => showHideChildren(id)}>
                     <div className='headers text-blue-900 font-bold w-full px-3 py-1 flex items-center '>
                         <div className='flex flex-1 items-center'>
-                            {node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className="hover:cursor-pointer hover:underline"
-                                onClick={() => getParent(parent, parentName)}>{parentName}</span></>}</div>
+                            {console.log(node.author === postAuthor)}
+                            {(node.author === postAuthor) ? <><HiUser className='mr-1' /> {node.author}</> : node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className={`hover:cursor-pointer hover:underline`}
+                                onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}</div>
+                    </div>
+                    <CommentText>{node.text}</CommentText>
+                    <div className='items-center justify-center flex w-fit m-auto text-white'>
                         {
                             //Checks to see if hiddenRepliesCount(int) is truthy
                             (hiddenRepliesCount) ?
                                 //Show the "Show [hiddenRepliesCount]" button
-                                (<div className='flex font-normal hover:cursor-pointer hover:underline' >
+                                (<div className='flex font-normal hover:cursor-pointer items-center bg-gray-400 py-1 px-5 rounded-full my-3 ' >
                                     <FiMaximize2 className='text-xl mr-2 ' />
                                     expand thread</div>
                                 )
                                 :
                                 // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
-                                ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer hover:underline'>
+                                ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center bg-gray-400 py-1 px-5 rounded-full my-3 '>
                                     <FiMinimize2 className='text-xl mr-2' />
                                     collapse thread</div>
                         }
                     </div>
-                    <CommentText>{node.text}</CommentText>
                 </div>
             }
             {/* Recursively show the comments in a tree format. */}
             <div className={`replies-${id}`}>
                 {((showChildren) ? node.children : !node.children) && node.children.filter((childNode) => (childNode.author)).map(childNode => (
-                    <TreeNode key={childNode.id} id={childNode.id} node={childNode} indent={indent + 1} parent={childNode.parent_id} parentName={node.author} />
+                    <TreeNode key={childNode.id} id={childNode.id} node={childNode} indent={indent + 1} parent={childNode.parent_id} parentName={node.author} postAuthor={postAuthor} />
                 ))}</div>
         </div>
     );

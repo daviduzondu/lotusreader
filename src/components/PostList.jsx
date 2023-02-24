@@ -20,7 +20,7 @@ function PostList({ news, page, setPage, setClicked, type }) {
                 <div className='md:text-lg text-sm justify-center md:font-normal flex flex-wrap items-center ml-2 mt-2'>
                     Made with ❤️ by
                     <a href={"https://www.twitter.com/daveuzondu"} className="ml-2 mr-2 underline">David Uzondu </a> -
-                    <a href='https://www.github.com/daviduzondu/' className="ml-2 mr-2 underline" > <BsGithub className='inline mr-2' />Star on Github</a> -
+                    <a href='https://github.com/daviduzondu/lotusreader' className="ml-2 mr-2 underline" > <BsGithub className='inline mr-2' />Star on Github</a> -
                     <a href='#' className="ml-2 underline">  <AiOutlineRead className='inline mr-2' />Read the Dev.to post</a>
                 </div>
                 {news.map(item => <PostCard item={item} location={location} setClicked={setClicked} />)}

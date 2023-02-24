@@ -34,9 +34,9 @@ function PostView() {
         return <Error />
     }
 
-    if (!clicked) {
-        return <ClickPrompt />
-    }
+    // if (!clicked) {
+    //     return <ClickPrompt />
+    // }
 
     if (post) {
         return (
@@ -47,7 +47,7 @@ function PostView() {
                 {post.text && <div className={(post.type === "text" || "story") ? `mx-3 [&>p>a]:underline [&>p>a]:text-blue-800 bg-blue-50 py-5 px-3 rounded-lg` : undefined}>{parse(post.text)}</div>}
                 {post.url &&
                     <div className='mx-3 w-full p-5 hover:bg-blue-50 hover:duration-300 hover:cursor-pointer duration-300 rounded-xl text-xl border text-center' onClick={() => window.open(post.url)}>{post.url}<BsBoxArrowInUpRight className='ml-3 inline' /></div>}
-                <Comments comments={post.children} />
+                <Comments comments={post.children} postAuthor={post.author}/>
             </div>
         )
     } else if (!post || loading) {
