@@ -1,14 +1,15 @@
 
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { BsReplyFill } from "react-icons/bs";
 import { HiUser } from "react-icons/hi"
 import { Link } from 'react-router-dom';
-import { FiMinimize2, FiMaximize2 } from 'react-icons/fi'
+import { FiMinimize2, FiMaximize2, FiEye } from 'react-icons/fi'
 import { RxDotFilled } from 'react-icons/rx'
 import parse from 'html-react-parser';
 import moment from 'moment/moment';
+import { Tooltip } from 'react-tooltip'
 
 
 function Comments({ comments, postAuthor }) {
@@ -18,7 +19,7 @@ function Tree({ data, postAuthor }) {
     return (
         <div className='md:mb-3 mx-3'>
             {data.map(rootNode => (
-
+                // console.log(rootNode)
                 (rootNode.author) && <TreeNode key={rootNode.id} id={rootNode.id} node={rootNode} indent={0} isRoot={true} parent={null} parentName={null} postAuthor={postAuthor} />
             ))}
         </div>
@@ -26,6 +27,8 @@ function Tree({ data, postAuthor }) {
 }
 
 function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) {
+    const [showChildren, setShowChildren] = useState(true);
+    const [parentEl, enableAnimations] = useAutoAnimate();
     const [hiddenRepliesCount, sethiddenRepliesCount] = useState();
 
     function showHideChildren(replies_id) {
@@ -64,19 +67,19 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
             // Render the comments container
             (!isRoot) ? `comment-container comment-${id} inner-comment-shadow ml-3 border border-b-0 border-r-0 border-black hover:cursor-default`
                 : `comment-container root-shadow comment-${id}
-            border border-black mt-3  hover:cursor-default`} data-parent-id={`parent-${id}`}>
+            border border-black mt-3  hover:cursor-default`} data-parent-id={`parent-${id}`} ref={parentEl}>
 
             {/* Render the comment's headers and text */}
             {(node.author && node.text) &&
-                <div className='content py-3 ' >
+                <div className='content py-3 ' /**onClick={() => showHideChildren(id)}**/>
                     <div className='headers text-blue-900 md:text-xs text-sm font-bold w-full px-3 py-1 flex items-center '>
                         <div className='flex flex-1 items-center'>
                             {(node.author === postAuthor) ? <><HiUser className='mr-1' /> {node.author}</> : node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className={`hover:cursor-pointer hover:underline`}
                                 onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}
-                            <RxDotFilled className='mx-1' />
-                            <span>{moment(node.created_at).fromNow()}</span>
-
-                        </div>
+                                <RxDotFilled className='mx-1' />
+                                <span>{moment(node.created_at).fromNow()}</span>
+                                
+                                </div>
                     </div>
                     <CommentText>{node.text}</CommentText>
                     <div className='flex w-full justify-end'>
@@ -102,7 +105,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
             }
             {/* Recursively show the comments in a tree format. */}
             <div className={`replies-${id}`}>
-                {node.children && node.children.filter((childNode) => (childNode.author)).map(childNode => (
+                {((showChildren) ? node.children : !node.children) && node.children.filter((childNode) => (childNode.author)).map(childNode => (
                     <TreeNode key={childNode.id} id={childNode.id} node={childNode} indent={indent + 1} parent={childNode.parent_id} parentName={node.author} postAuthor={postAuthor} />
                 ))}</div>
         </div>
@@ -121,7 +124,7 @@ function CommentText({ children }) {
                 if (domNode.attribs) {
                     if (domNode.attribs.href) {
                         if (domNode.attribs.href.includes("item")) {
-                            return <Link to={`/item/${domNode.attribs.href.substring(37)}`} target="_blank">
+                            return <Link to={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`}>
                                 {`${domNode.attribs.href}`}
                             </Link>
                         }
