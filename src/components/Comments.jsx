@@ -124,12 +124,12 @@ function CommentText({ children }) {
                 if (domNode.attribs) {
                     if (domNode.attribs.href) {
                         if (domNode.attribs.href.includes("item")) {
-                            return <Link to={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`}>
+                            return <Link to={`https://lotusreader.netlify.app/item/${domNode.attribs.href.substring(37)}`} target="_blank">
                                 {`${domNode.attribs.href}`}
                             </Link>
                         }
                         return <Link to={`${domNode.attribs.href}`} target="_blank">
-                            {`${domNode.attribs.href}}`}
+                            {`${domNode.attribs.href}`}
                         </Link>
                     }
                 }
