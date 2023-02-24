@@ -1,3 +1,4 @@
+![Image](https://i.ibb.co/Dz2WG8C/Lotus-Reader-Banner.png)
 # Lotus Reader
 Lotus Reader is a Hackernews client built with tailwindCSS and React.
 ## How to run
