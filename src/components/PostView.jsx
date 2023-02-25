@@ -10,9 +10,11 @@ import moment from 'moment/moment';
 import { FaComment, FaArrowCircleUp, FaRegClock, FaUser } from 'react-icons/fa'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BsReplyFill } from "react-icons/bs";
 
 function PostView() {
     const [visited, setVisited] = useState();
+    const [inThread, setInThread] = useState();
     let clicked = useParams();
     clicked = clicked.id;
     const [post, setPost] = useState();
@@ -23,13 +25,35 @@ function PostView() {
         setPost();
         setLoading(true);
         setError(false);
+
+        function getThreadParent(storyID, originalData) {
+            fetch(`https://hn.algolia.com/api/v1/items/${storyID}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data !== undefined) {
+                        setInThread(data);
+                        setPost(originalData);
+
+                    }
+                    // setLoading(false);
+                }).catch((e) => {
+                    setPost(originalData);
+                    // setError(true);
+                })
+        }
+
         if (clicked !== undefined) {
             fetch(`https://hn.algolia.com/api/v1/items/${clicked}`)
                 .then(res => res.json())
                 .then(data => {
-                    setPost(data);
+                    console.log(data.type);
+                    if (data.type === "comment") {
+                        getThreadParent(data.story_id, data)
+                    } else {
+                        setPost(data);
+                    }
                     setLoading(false);
-                }).catch((e) => setError(true))
+                }).catch((e) => { setError(true); console.log(e) })
         }
     }, [clicked])
 
@@ -54,7 +78,6 @@ function PostView() {
 
     if (post) {
         return (
-
             <div className='postview md:w-2/3 md:m-auto overflow-x-hidden mt-10px -z-1' id="scrollbar1">
                 <div>
                     <ToastContainer
@@ -77,10 +100,18 @@ function PostView() {
                     <div className='font-bold mx-3 flex items-center w-fit text-blue-900'>
                         <FaRegClock className='inline mr-2' /> {moment(post.created_at).fromNow()}</div>
                     <div className='font-bold mx-3 flex items-center w-fit text-blue-900'>
-                        <FaArrowCircleUp className='inline mr-2' />{post.points}</div>
+                        <FaArrowCircleUp className='inline mr-2' />{post.points ? post.points : 0}</div>
                     <div className='font-bold mx-3 flex items-center w-fit text-blue-900'><FaComment className='inline mr-2' />{post.children.length}</div>
                 </div>
-                {post.text && <div className={(post.type === "text" || "story") ? `mx-3 [&>p>a]:underline [&>p>a]:text-blue-800 bg-blue-50 py-5 px-3 rounded-lg` : undefined}>{parse(post.text)}</div>}
+
+                {post.text && <div className={(post.type === "text" || "story") ? `mx-3 [&>p>a]:underline [&>p>a]:text-blue-800 bg-blue-50 py-5 px-3 rounded-lg` : undefined}>
+                    {post.type === "comment" && <div className='text-blue-900 flex font-semibold items-center justify-center mb-2'><Link to={`/item/${post.story_id}`} className="flex items-center"><BsReplyFill className='inline mr-2' />In reply to
+                        <span>
+                            {inThread ? <><span className='ml-1 bg-blue-200 p-2 rounded-full mr-1'>{inThread.title}</span>by {inThread.author}</>
+                                : <>lotusreader.netlify.app/item/{post.story_id}</>}
+                        </span></Link></div>}
+                    {parse(post.text)}
+                </div>}
                 {post.url &&
                     <div className='w-full p-5 bg-blue-200 hover:bg-blue-50 hover:duration-300 hover:cursor-pointer duration-300 rounded-xl text-xl border text-center' onClick={() => window.open(post.url)}>{post.url}<BsBoxArrowInUpRight className='ml-3 inline' /></div>}
                 <Comments comments={post.children} postAuthor={post.author} />
