@@ -81,7 +81,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
                             <span>{moment(node.created_at).fromNow()}</span>
                         </div>
                         <div className='flex'>
-                            <div className='items-center flex w-fit mr-3 md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
+                            <div className='items-center flex w-fit mr-1 md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
                                 {
                                     //Checks to see if hiddenRepliesCount(int) is truthy
                                     (hiddenRepliesCount) ?
