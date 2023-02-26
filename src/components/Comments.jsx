@@ -118,7 +118,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 
 function CommentText({ children }) {
     return (
-        <div className='content md:text-sm break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
+        <div className='content md:text-sm text-sm break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
         >{parse(children, {
             replace: domNode => {
                 if (domNode.attribs) {
