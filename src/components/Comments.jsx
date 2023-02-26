@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { BsReplyFill } from "react-icons/bs";
 import { HiUser } from "react-icons/hi"
+import {AiOutlinePlus} from 'react-icons/ai'
 import { Link } from 'react-router-dom';
 import { FiMinimize2, FiMaximize2, FiEye } from 'react-icons/fi'
 import { RxDotFilled } from 'react-icons/rx'
@@ -71,36 +72,32 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 
             {/* Render the comment's headers and text */}
             {(node.author && node.text) &&
-                <div className='content py-3 ' /**onClick={() => showHideChildren(id)}**/>
-                    <div className='headers text-blue-900 md:text-xs text-sm font-bold w-full px-3 py-1 flex items-center '>
+                <div className='content' /**onClick={() => showHideChildren(id)}**/>
+                    <div className='headers text-blue-900 md:text-xs text-sm font-bold w-full px-3 flex items-center my-3 '>
                         <div className='flex flex-1 items-center'>
                             {(node.author === postAuthor) ? <><HiUser className='mr-1' /> {node.author}</> : node.author}{(parentName) && <> <BsReplyFill className='mx-1' /> <span className={`hover:cursor-pointer hover:underline`}
                                 onClick={() => getParent(parent, parentName)}>{(parentName === postAuthor) ? <><HiUser className='mr-1 inline' /> {parentName}</> : parentName}</span></>}
-                                <RxDotFilled className='mx-1' />
-                                <span>{moment(node.created_at).fromNow()}</span>
-                                
-                                </div>
-                    </div>
-                    <CommentText>{node.text}</CommentText>
-                    <div className='flex w-full justify-end'>
-                        <div className='items-center flex w-fit mr-3 md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
-                            {
-                                //Checks to see if hiddenRepliesCount(int) is truthy
-                                (hiddenRepliesCount) ?
-                                    //Show the "Show [hiddenRepliesCount]" button
-                                    (<div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 ' >
-                                        <FiMaximize2 className='text-xl mr-2 ' />
-                                        expand thread [{hiddenRepliesCount} more]</div>
-                                    )
-                                    :
-                                    // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
-                                    ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full my-3 '>
-                                        <FiMinimize2 className='text-xl mr-2' />
-                                        collapse thread</div>
-                            }
+                            <RxDotFilled className='mx-1' />
+                            <span>{moment(node.created_at).fromNow()}</span>
+                        </div>
+                        <div className='flex'>
+                            <div className='items-center flex w-fit mr-3 md:text-sm text-gray-700' onClick={() => showHideChildren(id)}>
+                                {
+                                    //Checks to see if hiddenRepliesCount(int) is truthy
+                                    (hiddenRepliesCount) ?
+                                        //Show the "Show [hiddenRepliesCount]" button
+                                        (<div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full ' >
+                                            <FiMaximize2 className='text-xl scale-75' /><AiOutlinePlus className='inline mx-1'/> {hiddenRepliesCount}</div>
+                                        )
+                                        :
+                                        // Else: Checks to see if the element we clicked on has any replies and if it does, show the 'hide replies button'
+                                        ((document.querySelector(`.replies-${id}`)) && document.querySelector(`.replies-${id}`).childElementCount > 0) && <div className='flex font-normal hover:cursor-pointer items-center border border-gray-800 py-1 px-5 rounded-full '>
+                                            <FiMinimize2 className='text-xl scale-75' /></div>
+                                }
+                            </div>
                         </div>
                     </div>
-
+                    <CommentText>{node.text}</CommentText>
                 </div>
             }
             {/* Recursively show the comments in a tree format. */}
@@ -118,7 +115,7 @@ function TreeNode({ id, node, indent, isRoot, parent, parentName, postAuthor }) 
 
 function CommentText({ children }) {
     return (
-        <div className='content md:text-sm text-sm break-words overflow-auto w-full px-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
+        <div className='content md:text-sm text-sm break-words overflow-auto w-full px-3 pb-3 [&>p>a]:underline [&>p>a]:text-blue-900 [&>pre]:pre-wrap)'
         >{parse(children, {
             replace: domNode => {
                 if (domNode.attribs) {
