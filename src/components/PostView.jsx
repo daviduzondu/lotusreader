@@ -105,7 +105,7 @@ function PostView() {
                 </div>
 
                 {post.text && <div className={(post.type === "text" || "story") ? `mx-3 [&>p>a]:underline [&>p>a]:text-blue-800 bg-blue-50 py-5 px-3 rounded-lg` : undefined}>
-                    {post.type === "comment" && <div className='text-blue-900 flex font-semibold items-center justify-center mb-2'><Link to={`/item/${post.story_id}`} className="flex items-center"><BsReplyFill className='inline mr-2' />In reply to
+                    {post.type === "comment" && <div className='text-blue-900 flex font-semibold text-sm items-center justify-center mb-2'><Link to={`/item/${post.story_id}`} className="flex items-center"><BsReplyFill className='inline mr-2' />In reply to
                         <span>
                             {inThread ? <><span className='ml-1 bg-blue-200 p-2 rounded-full mr-1'>{inThread.title}</span>by {inThread.author}</>
                                 : <>lotusreader.netlify.app/item/{post.story_id}</>}
