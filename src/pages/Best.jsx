@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import useFetchAll from '../Hooks/useFetchAll';
-import usePageBottom from '../Hooks/usePageBottom';
+import useFetchAll from '../hooks/useFetchAll';
+import usePageBottom from '../hooks/usePageBottom';
 import PostList from '../components/PostList';
 import PostView from '../components/PostView';
 import Loading from '../components/Loading';

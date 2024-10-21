@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import useFetchAll from '../Hooks/useFetchAll';
+import useFetchAll from '../hooks/useFetchAll';
 import PostList from '../components/PostList';
 import Loading from '../components/Loading';
 function Trending() {
