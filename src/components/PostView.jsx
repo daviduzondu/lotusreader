@@ -11,6 +11,7 @@ import { FaComment, FaArrowCircleUp, FaRegClock, FaUser } from 'react-icons/fa'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BsReplyFill } from "react-icons/bs";
+import { comment } from 'postcss';
 
 function PostView() {
     const [visited, setVisited] = useState();
@@ -20,7 +21,18 @@ function PostView() {
     const [post, setPost] = useState();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    window.scrollTo(0, 0)
+    
+    function getCommentsCount(post) {
+     let count = post.children?.length || 0;
+ 
+     post.children?.forEach(child => {
+         count += getCommentsCount(child);  
+     });
+ 
+     return count;
+    }
+ 
+
     useEffect(() => {
         setPost();
         setLoading(true);
@@ -77,6 +89,7 @@ function PostView() {
     }
 
     if (post) {
+      window.scrollTo(0,0)
         return (
             <div className='postview md:w-2/3 md:m-auto overflow-x-hidden mt-10px -z-1' id="scrollbar1">
                 <div>
@@ -101,7 +114,8 @@ function PostView() {
                         <FaRegClock className='inline mr-2' /> {moment(post.created_at).fromNow()}</div>
                     <div className='font-bold mx-3 flex items-center w-fit text-blue-900'>
                         <FaArrowCircleUp className='inline mr-2' />{post.points ? post.points : 0}</div>
-                    <div className='font-bold mx-3 flex items-center w-fit text-blue-900'><FaComment className='inline mr-2' />{post.children.length}</div>
+                      
+                    <div className='font-bold mx-3 flex items-center w-fit text-blue-900'><FaComment className='inline mr-2' />{getCommentsCount(post)}</div>
                 </div>
 
                 {post.text && <div className={(post.type === "text" || "story") ? `mx-3 [&>p>a]:underline [&>p>a]:text-blue-800 bg-blue-50 py-5 px-3 rounded-lg` : undefined}>

@@ -14,6 +14,7 @@ function PostList({ news, page, setPage, setClicked, type }) {
     useEffect(() => {
         setLoadText("Load More")
     }, [news])
+
     if (news) {
         return (
             <div className='postlist md:w-2/3 md:m-auto w-full pt-5 flex flex-col' id='scrollbar1'>

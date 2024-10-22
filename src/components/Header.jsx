@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { FaFeatherAlt } from 'react-icons/fa'
 function Header() {
     return (
-        <div className='bg-blue-900 py-2 text-white md:flex md:justify-between items-center w-screen z-10 px-3' >
+        <div className='bg-blue-900 py-2 text-white md:flex md:justify-between items-center w-screen z-10 px-3 fixed' >
             <div className='flex mr-1 justify-center'>
                 <FaFeatherAlt className='inline text-2xl mr-1' /> Lotus Reader 
             </div>
